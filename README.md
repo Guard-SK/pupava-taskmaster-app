@@ -1,6 +1,6 @@
 # 🌼 Pupava Taskmaster
 
-An interactive, real-time quiz game designed for children's camps, schools, and team building events. Built with **Vue.js**, **Node.js (Express)**, and **Socket.io** to enable instant real-time synchronization between the moderator, the scoreboard/projection, and the voting teams.
+An interactive, real-time quiz game designed for one summer camp activity inspired by the famous show Taskmaster. Built with **Vue.js**, **Node.js (Express)**, and **Socket.io** to enable instant real-time synchronization between the moderator, the scoreboard/projection, and the voting teams.
 
 ---
 
