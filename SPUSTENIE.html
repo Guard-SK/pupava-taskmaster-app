@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spustenie a užitočné príkazy (macOS)</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+      --text-muted: #64748b;
+      --accent: #2563eb;
+      --border-color: #e2e8f0;
+      --code-bg: #f1f5f9;
+      --code-text: #b91c1c;
+      --pre-bg: #0f172a;
+      --pre-text: #38bdf8;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 760px;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      color: #0f172a;
+      letter-spacing: -0.025em;
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #0f172a;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 16px 0 8px 0;
+      color: var(--accent);
+    }
+
+    p {
+      margin: 0 0 12px 0;
+      color: var(--text-color);
+    }
+
+    ul,
+    ol {
+      margin: 0 0 12px 0;
+      padding-left: 20px;
+      color: var(--text-color);
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: var(--code-bg);
+      border: 1px solid #cbd5e1;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--code-text);
+    }
+
+    pre {
+      background-color: var(--pre-bg);
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    pre code {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      border-radius: 0;
+      color: var(--pre-text);
+      font-size: 0.95rem;
+    }
+
+    .kbd {
+      background-color: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      border-radius: 4px;
+      padding: 2px 4px;
+      font-size: 0.8rem;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .tip-box {
+      background-color: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin: 16px 0 0 0;
+    }
+
+    .tip-box strong {
+      color: #78350f;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .tip-box p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #92400e;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Spustenie a užitočné príkazy (macOS)</h1>
+      <p>Návod na zapnutie, vypnutie a riešenie oprávnení pre aplikáciu Pupava Taskmaster.</p>
+    </header>
+
+    <!-- ZAPNUTIE A VYPNUTIE -->
+    <div class="section">
+      <h2>🚀 Ako zapnúť a vypnúť hru</h2>
+
+      <h3>1. Zapínanie</h3>
+      <ol>
+        <li>Spusti program <strong>Visual Studio Code</strong> a uisti sa, že máš otvorený priečinok s hrou.</li>
+        <li>V hornom menu programu klikni na <strong>Terminal</strong> a zvoľ <strong>New Terminal</strong> (dole sa
+          otvorí čierne okno s blikajúcim kurzorom).</li>
+        <li>Klikni myšou do tohto čierneho okna, napíš nasledujúci príkaz a stlač kláves <strong>Enter</strong>:
+          <pre><code>npm run dev</code></pre>
+        </li>
+        <li>Počkaj 2–3 sekundy, kým sa v okne nezobrazia internetové adresy. Hra je v tomto momente úspešne zapnutá a
+          beží na pozadí.</li>
+      </ol>
+
+      <h3>2. Ako hru otvoriť v prehliadači</h3>
+      <p>Aplikácia má 3 hlavné časti, ktoré sa otvárajú na rôznych adresách:</p>
+      <ul>
+        <li><strong>Pre teba (na počítači):</strong>
+          <ul>
+            <li><strong>Administrátorská konzola (moderátor):</strong>
+              <code>http://localhost:5173/admin</code>
+              (tu ovládaš celú hru, pridávaš slajdy a priraďuješ body)
+            </li>
+            <li><strong>Premietacia obrazovka (projektor):</strong>
+              <code>http://localhost:5173/projector</code>
+              (túto stránku si presuň na projektor pre divákov – zobrazuje priebežné poradie a výsledky)
+            </li>
+          </ul>
+        </li>
+        <li><strong>Pre deti:</strong>
+          <ul>
+            <li><strong>Hlasovacia stránka pre tímy:</strong>
+              <code>http://[IP_ADRESA_MACu]:5173/client</code> (alebo len základná adresa bez koncovky:
+              <code>http://[IP_ADRESA_MACu]:5173</code>)
+            </li>
+            <li><em>Poznámka: Deti sa musia najprv pripojiť na <strong>tú istú Wi-Fi sieť</strong>, ako tvoj počítač.
+                Adresu s reálnymi číslami (IP adresou tvojho Macu) uvidíš v termináli pod riadkom
+                <code>Network:</code>.</em></li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>3. Ako hru vypnúť</h3>
+      <p>Keď chceš program ukončiť:</p>
+      <ol>
+        <li>Klikni myšou do čierneho okna terminálu vo VS Code.</li>
+        <li>Stlač na klávesnici naraz klávesy <kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">C</kbd> (pozor, na Macu je
+          to v termináli naozaj kláves <strong>Control / Ctrl</strong>, nie Command/Cmd).</li>
+        <li>Servery sa vypnú a môžeš bezpečne zavrieť celý program Visual Studio Code.</li>
+      </ol>
+    </div>
+
+    <!-- UŽITOČNÉ KOMANDY PRE MAC -->
+    <div class="section">
+      <h2>🛠️ Užitočné príkazy (macOS)</h2>
+      <p>Tieto príkazy pomáhajú vyriešiť problémy s inštaláciou, oprávneniami alebo zistením sieťovej IP adresy.</p>
+
+      <h3>1. Inštalácia modulov (pri problémoch s oprávneniami)</h3>
+      <p>Ak bežný príkaz <code>npm install</code> vypíše chybu ohľadom oprávnení (permission denied), použi inštaláciu s
+        povolením pre nebezpečné práva:</p>
+      <pre><code>sudo npm install --unsafe-perm</code></pre>
+      <p><em>(Bude potrebné zadať heslo k tvojmu Macu – pri písaní sa heslo z bezpečnostných dôvodov nezobrazuje, len ho
+          napíš a stlač Enter).*</em></p>
+
+      <h3>2. Oprava vlastníctva priečinka (Permission Denied)</h3>
+      <p>Ak server nedokáže zapisovať súbory (napr. ukladať stav hry do <code>state.json</code>) alebo hlási chyby
+        prístupu, nastav seba ako vlastníka celého priečinka projektu:</p>
+      <pre><code>sudo chown -R $(whoami) /Users/tomassuchanek/pupava-taskmaster</code></pre>
+      <p><em>(Tento príkaz rekurzívne priradí vlastníctvo priečinka tvojmu aktuálnemu macOS užívateľovi).*</em></p>
+      <div class="tip-box">
+        <strong>💡 Alternatívny rýchly variant:</strong>
+        <p>Ak si v termináli priamo v priečinku projektu, stačí použiť bodku <code>.</code> namiesto celej cesty:</p>
+        <pre><code>sudo chown -R $(whoami) .</code></pre>
+      </div>
+
+      <h3>3. Rýchle zistenie lokálnej IP adresy</h3>
+      <p>Pre zistenie IP adresy tvojho Macu v lokálnej Wi-Fi sieti (aby sa vedeli pripojiť deti z mobilov) spusti
+        príkaz:</p>
+      <pre><code>ipconfig getifaddr en0</code></pre>
+      <p>Príkaz ti okamžite vypíše tvoju lokálnu IP adresu (napr. <code>192.168.1.52</code>), ktorú potom dosadíš do
+        odkazu pre mobily: <code>http://[IP_ADRESA]:5173</code>.</p>
+    </div>
+  </div>
+</body>
+
+</html>
