@@ -1069,7 +1069,7 @@ watch(() => currentSlide.value?.currentStep, (newStep) => {
           winnerInstructorId: currentSlide.value.winnerInstructorId
         });
       }
-    }, 3500);
+    }, 3000);
   }
 });
 
@@ -1225,19 +1225,28 @@ const goToSlide = (idx) => {
 const prevSlide = () => {
   if (!state.value) return;
   const slide = currentSlide.value;
-  if (slide && (slide.type === 'vote_individual' || slide.type === 'vote_team') && slide.currentStep > 0) {
-    socket.emit('admin:setSlideStep', {
-      slideIndex: state.value.currentSlideIndex,
-      step: slide.currentStep - 1
-    });
-  } else if (state.value.currentSlideIndex > 0) {
+  const multiStepTypes = ['vote_individual', 'vote_team', 'special', 'special_resolve'];
+  
+  if (slide && multiStepTypes.includes(slide.type)) {
+    const minStep = slide.type === 'special' ? 1 : 0;
+    if (slide.currentStep > minStep) {
+      socket.emit('admin:setSlideStep', {
+        slideIndex: state.value.currentSlideIndex,
+        step: slide.currentStep - 1
+      });
+      return;
+    }
+  }
+  
+  if (state.value.currentSlideIndex > 0) {
     const prevIdx = state.value.currentSlideIndex - 1;
     const prevS = state.value.slides[prevIdx];
     socket.emit('admin:changeSlide', prevIdx);
-    if (prevS && (prevS.type === 'vote_individual' || prevS.type === 'vote_team')) {
+    if (prevS && multiStepTypes.includes(prevS.type)) {
+      const maxStep = (prevS.type === 'vote_individual' || prevS.type === 'vote_team') ? 4 : 2;
       socket.emit('admin:setSlideStep', {
         slideIndex: prevIdx,
-        step: 4
+        step: maxStep
       });
     }
   }
@@ -1246,19 +1255,28 @@ const prevSlide = () => {
 const nextSlide = () => {
   if (!state.value) return;
   const slide = currentSlide.value;
-  if (slide && (slide.type === 'vote_individual' || slide.type === 'vote_team') && slide.currentStep < 4) {
-    socket.emit('admin:setSlideStep', {
-      slideIndex: state.value.currentSlideIndex,
-      step: slide.currentStep + 1
-    });
-  } else if (state.value.currentSlideIndex < state.value.slides.length - 1) {
+  const multiStepTypes = ['vote_individual', 'vote_team', 'special', 'special_resolve'];
+  
+  if (slide && multiStepTypes.includes(slide.type)) {
+    const maxStep = (slide.type === 'vote_individual' || slide.type === 'vote_team') ? 4 : 2;
+    if (slide.currentStep < maxStep) {
+      socket.emit('admin:setSlideStep', {
+        slideIndex: state.value.currentSlideIndex,
+        step: slide.currentStep + 1
+      });
+      return;
+    }
+  }
+  
+  if (state.value.currentSlideIndex < state.value.slides.length - 1) {
     const nextIdx = state.value.currentSlideIndex + 1;
     const nextS = state.value.slides[nextIdx];
     socket.emit('admin:changeSlide', nextIdx);
-    if (nextS && (nextS.type === 'vote_individual' || nextS.type === 'vote_team')) {
+    if (nextS && multiStepTypes.includes(nextS.type)) {
+      const minStep = nextS.type === 'special' ? 1 : 0;
       socket.emit('admin:setSlideStep', {
         slideIndex: nextIdx,
-        step: 0
+        step: minStep
       });
     }
   }

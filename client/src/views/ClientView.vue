@@ -127,7 +127,7 @@
         <!-- Countdown -->
         <div v-if="currentSlide.currentStep === 1" class="flex flex-col items-center justify-center my-12 min-h-[250px] w-full animate-pulse-fast">
           <div :key="introCountdown" class="countdown-number text-[8rem] font-black text-yellow-500 font-display drop-shadow-[0_0_40px_rgba(234,179,8,0.5)]">
-            {{ introCountdown }}
+            {{ introCountdown > 0 ? introCountdown : '👑' }}
           </div>
         </div>
         
@@ -177,8 +177,7 @@
            class="glass rounded-3xl p-10 border-3 border-yellow-500 shadow-[0_0_30px_rgba(250,204,21,0.2)] relative overflow-hidden animate-slide-up">
         <div class="absolute -right-8 -top-8 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl animate-pulse"></div>
         
-        <h3 class="text-2xl font-black uppercase text-yellow-500 tracking-wider mb-2">🎉 Celkové Vyhodnotenie</h3>
-        <p class="text-gray-300 text-sm mb-6">Hra bola vyhodnotená!</p>
+        <h3 class="text-2xl font-black uppercase text-yellow-500 tracking-wider mb-2">🎉 Celkové Vyhodnotenie 🎉</h3>
         
         <div class="mt-6">
           <div class="text-white/60 text-xs uppercase tracking-widest">Umiestnenie vášho tímu:</div>
@@ -207,9 +206,18 @@
 
         <!-- Current Score / Status if available and not during the reveal timer -->
         <template v-if="!(isTeamRevealActive && !finalRankRevealed)">
-          <div v-if="myTeamScore !== null" class="mt-8 pt-6 border-t border-white/10 flex justify-between items-center px-4">
-            <span class="text-gray-400">Aktuálne body:</span>
-            <span class="text-3xl font-extrabold text-yellow-400">{{ myTeamScore }} b</span>
+          <div class="mt-8 pt-6 border-t border-white/10 space-y-3">
+            <div v-if="myTeamRankInfo" class="flex justify-between items-center px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+              <span class="text-gray-400 text-sm font-semibold">Aktuálne umiestnenie:</span>
+              <span class="text-xl font-black text-white">
+                {{ myTeamRankInfo.allZero ? '—' : `${myTeamRankInfo.rank}. miesto` }}
+              </span>
+            </div>
+
+            <div v-if="myTeamScore !== null" class="flex justify-between items-center px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+              <span class="text-gray-400 text-sm font-semibold">Aktuálne body:</span>
+              <span class="text-xl font-black text-yellow-400">{{ myTeamScore }} b</span>
+            </div>
           </div>
 
           <!-- Gap / Tied with text -->
@@ -219,8 +227,8 @@
         </template>
       </div>
       
-      <div class="mt-8 text-white/40 text-sm flex items-center justify-center gap-4">
-        <span><strong class="text-white">{{ myTeamName }}</strong></span>
+      <div class="mt-8 text-white/65 font-semibold text-sm flex items-center justify-center gap-4 select-none">
+        <span>{{ myTeamName }}</span>
       </div>
     </div>
 
@@ -403,19 +411,32 @@ const hasImage = (name) => {
 
 const getInstructorImage = (name) => {
   const norm = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (norm === 'david') return '/David.png';
-  if (norm === 'jul') return '/Jul.png';
-  if (norm === 'juro') return '/Juro.png';
-  if (norm === 'matus') return '/Matus.png';
-  if (norm === 'danko') return '/Danko.png';
-  if (norm === 'ella') return '/Ella.png';
-  if (norm === 'zuzka') return '/Zuzka.png';
+  if (norm === 'david') return '/David.avif';
+  if (norm === 'jul') return '/Jul.avif';
+  if (norm === 'juro') return '/Juro.avif';
+  if (norm === 'matus') return '/Matus.avif';
+  if (norm === 'ella') return '/Ella.avif';
+  if (norm === 'zuzka') return '/Zuzka.avif';
   return null;
 };
 
 const sortedTeams = computed(() => {
   if (!state.value || !state.value.teams) return [];
   return [...state.value.teams].sort((a, b) => b.score - a.score);
+});
+
+const rankedTeams = computed(() => {
+  if (!sortedTeams.value) return [];
+  let currentRank = 1;
+  return sortedTeams.value.map((team, index) => {
+    if (index > 0 && team.score < sortedTeams.value[index - 1].score) {
+      currentRank = index + 1;
+    }
+    return {
+      ...team,
+      rank: currentRank
+    };
+  });
 });
 
 const myTeamRankInfo = computed(() => {
@@ -447,19 +468,19 @@ const myTeamRankInfo = computed(() => {
     if (myTeam.rank === 1) {
       const ties = ranked.filter(t => t.rank === 1 && t.id !== myTeam.id);
       if (ties.length > 0) {
-        statusText = `Delíte sa o 1. miesto s: ${ties.map(t => t.name).join(', ')}`;
+        statusText = `O 1. miesto sa delíte s: ${ties.map(t => t.name).join(', ')}`;
       } else {
-        statusText = 'Ste na úžasnom 1. mieste!';
+        statusText = 'Ste na 1. mieste!';
       }
     } else {
       const ties = ranked.filter(t => t.rank === myTeam.rank && t.id !== myTeam.id);
       if (ties.length > 0) {
-        statusText = `Ste na delenom ${myTeam.rank}. mieste (rovnako ako ${ties.map(t => t.name).join(', ')})`;
+        statusText = `Ste na delenom ${myTeam.rank}. mieste spolu s: ${ties.map(t => t.name).join(', ')}`;
       } else {
         const aheadTeam = ranked[myRankIndex - 1];
         if (aheadTeam) {
           const gap = aheadTeam.score - myTeam.score;
-          statusText = `Chýba vám ${gap} b na ${aheadTeam.name} (${aheadTeam.rank}. miesto)`;
+          statusText = `Na tím ${aheadTeam.name} strácate ${gap} b.`;
         }
       }
     }
@@ -468,7 +489,8 @@ const myTeamRankInfo = computed(() => {
   return {
     rank: myTeam.rank,
     score: myTeam.score,
-    statusText
+    statusText,
+    allZero
   };
 });
 
@@ -499,11 +521,22 @@ watch(isTeamRevealActive, (active) => {
   if (revealTimer) clearTimeout(revealTimer);
   if (active) {
     finalRankRevealed.value = false;
-    const delaysInfo = getRevealDelays(sortedTeams.value);
-    const finalDelay = delaysInfo.length > 0 ? delaysInfo[delaysInfo.length - 1].delay : 6000;
+    const delaysInfo = getRevealDelays(rankedTeams.value);
+    const myTeamRank = myTeamRankInfo.value?.rank;
+    
+    let revealDelay = 6000;
+    if (myTeamRank !== undefined && myTeamRank !== null) {
+      const myRankDelayInfo = delaysInfo.find(d => d.rank === myTeamRank);
+      if (myRankDelayInfo) {
+        revealDelay = myRankDelayInfo.delay;
+      }
+    } else if (delaysInfo.length > 0) {
+      revealDelay = delaysInfo[delaysInfo.length - 1].delay;
+    }
+    
     revealTimer = setTimeout(() => {
       finalRankRevealed.value = true;
-    }, finalDelay + 1000);
+    }, revealDelay + 1500); // 1.5 seconds safety buffer after it shows on projector
   } else {
     finalRankRevealed.value = false;
   }

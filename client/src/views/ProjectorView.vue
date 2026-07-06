@@ -427,7 +427,7 @@
         </div>
 
         <!-- Option Cards Grid (revealed when countdown finishes) -->
-        <div v-else :class="[
+        <div v-else-if="state.activeVote && state.activeVote.isOpen" :class="[
           'grid gap-6 w-full justify-center px-4',
           state.activeVote?.options?.length === 2
             ? 'grid-cols-1 sm:grid-cols-2 max-w-3xl'
@@ -477,9 +477,12 @@
         <h1 class="text-5xl md:text-6xl font-extrabold mb-12 text-center leading-tight font-display drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] max-w-6xl">
           Kto vyhrá dnešnú šou?
         </h1>
-        <div v-if="resolveCountdown > 0" class="flex flex-col items-center justify-center my-12 h-64">
-          <div :key="resolveCountdown" class="countdown-number text-[12rem] md:text-[16rem] font-black text-yellow-500 font-display drop-shadow-[0_0_60px_rgba(234,179,8,0.6)]">
+        <div class="flex flex-col items-center justify-center my-12 h-64">
+          <div v-if="resolveCountdown > 0" :key="resolveCountdown" class="countdown-number text-[12rem] md:text-[16rem] font-black text-yellow-500 font-display drop-shadow-[0_0_60px_rgba(234,179,8,0.6)]">
             {{ resolveCountdown }}
+          </div>
+          <div v-else class="text-[12rem] md:text-[16rem] font-black text-yellow-500 font-display drop-shadow-[0_0_60px_rgba(234,179,8,0.6)] animate-pulse">
+            👑
           </div>
         </div>
       </div>
@@ -512,7 +515,7 @@
         <!-- Correct teams -->
         <div class="w-full max-w-3xl">
           <div v-if="getCorrectTeams(currentSlide.winnerInstructorId).length > 0" class="space-y-4">
-            <h3 class="text-2xl font-bold text-green-400">Tieto tímy hádali správne a dostávajú +600 bodov:</h3>
+            <h3 class="text-2xl font-bold text-green-400">Tieto tímy uhádli správne a dostávajú +600 bodov:</h3>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
               <span v-for="team in getCorrectTeams(currentSlide.winnerInstructorId)" :key="team.id"
                     class="bg-green-600/20 text-green-400 border-2 border-green-500/30 px-6 py-3 rounded-2xl text-xl font-extrabold shadow-md">
@@ -632,6 +635,10 @@ watch(() => currentSlide.value?.currentStep, (newStep) => {
 
   // Regular voting countdown (step 1 for vote_individual, vote_team, special)
   if (newStep === 1 && slideType !== 'special_resolve') {
+    if (slideType === 'special' && !state.value?.activeVote?.isOpen) {
+      introCountdown.value = 0;
+      return;
+    }
     if (countdownInterval) clearInterval(countdownInterval);
     introCountdown.value = 3;
     countdownInterval = setInterval(() => {
@@ -662,6 +669,21 @@ watch(() => currentSlide.value?.currentStep, (newStep) => {
     if (resolveCountdownInterval) clearInterval(resolveCountdownInterval);
   }
 }, { immediate: true });
+
+// Start countdown for special slide type when the vote is officially opened by admin
+watch(() => state.value?.activeVote?.isOpen, (isOpen, oldIsOpen) => {
+  if (currentSlide.value?.type === 'special' && isOpen && !oldIsOpen) {
+    if (countdownInterval) clearInterval(countdownInterval);
+    introCountdown.value = 3;
+    countdownInterval = setInterval(() => {
+      if (introCountdown.value > 0) {
+        introCountdown.value--;
+      } else {
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+  }
+});
 const revealedInstructorRanks = ref([]);
 const revealedTeamRanks = ref([]);
 let revealTimeouts = [];
@@ -943,13 +965,12 @@ const hasImage = (name) => {
 
 const getInstructorImage = (name) => {
   const norm = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (norm === 'david') return '/David.png';
-  if (norm === 'jul') return '/Jul.png';
-  if (norm === 'juro') return '/Juro.png';
-  if (norm === 'matus') return '/Matus.png';
-  if (norm === 'danko') return '/Danko.png';
-  if (norm === 'ella') return '/Ella.png';
-  if (norm === 'zuzka') return '/Zuzka.png';
+  if (norm === 'david') return '/David.avif';
+  if (norm === 'jul') return '/Jul.avif';
+  if (norm === 'juro') return '/Juro.avif';
+  if (norm === 'matus') return '/Matus.avif';
+  if (norm === 'ella') return '/Ella.avif';
+  if (norm === 'zuzka') return '/Zuzka.avif';
   return null;
 };
 
